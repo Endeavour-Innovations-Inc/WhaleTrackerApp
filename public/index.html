@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Whale Tracker</title>
+    <style>
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        #trackerForm {
+            width: 100%; /* Adjust as needed */
+            max-width: 400px; /* Adjust as needed */
+        }
+
+        #trackerForm label,
+        #trackerForm select,
+        #trackerForm input,
+        #trackerForm button {
+            width: 100%; /* Make each form element take full width */
+            margin-bottom: 10px; /* Space out the form elements */
+        }
+
+        /* Removed LED style */
+    </style>
+</head>
+<body>
+    <h1>Whale Tracker</h1>
+    <div class="form-container">
+        <form id="trackerForm">
+            <label for="network">Select Network:</label>
+            <select id="network">
+                <option value="cronos">Cronos</option>
+                <!-- Additional networks can be added here -->
+            </select>
+
+            <label for="token">Select Token:</label>
+            <select id="token">
+                <option value="tonic">TONIC</option>
+                <!-- Additional tokens can be added here -->
+            </select>
+
+            <label for="threshold">Transfer Threshold:</label>
+            <input type="text" id="threshold" placeholder="Enter threshold" pattern="\d*"> <!-- Changed to text input -->
+
+            <label for="usdEquivalent">USD Equivalent (Future Use):</label>
+            <input type="text" id="usdEquivalent" placeholder="Enter USD amount">
+
+            <button type="submit" id="startTracking">Start Tracking</button>
+            <!-- Removed LED span -->
+        </form>
+    </div>
+
+    <div id="consoleOutput" style="white-space: pre-wrap;"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
