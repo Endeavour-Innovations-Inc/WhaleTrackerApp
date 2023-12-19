@@ -43,10 +43,10 @@
             </select>
 
             <label for="threshold">Transfer Threshold:</label>
-            <input type="text" id="threshold" placeholder="Enter threshold" pattern="\d*"> <!-- Changed to text input -->
+            <input type="number" id="threshold" placeholder="Enter threshold" step="any"> <!-- Allow decimal input -->
 
             <label for="usdEquivalent">USD Equivalent (Future Use):</label>
-            <input type="text" id="usdEquivalent" placeholder="Enter USD amount">
+            <input type="number" id="usdEquivalent" placeholder="Enter USD amount" step="any"> <!-- Allow decimal input -->
 
             <button type="submit" id="startTracking">Start Tracking</button>
             <!-- Removed LED span -->
