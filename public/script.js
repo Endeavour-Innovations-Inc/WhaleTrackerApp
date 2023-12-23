@@ -38,10 +38,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (selectedToken === 'eth') {
             contractAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
             abiURL = '/abis/ethABI.json';
+            tokenSymbol = 'ethereum'; // Default to Ethereum
         } else if (selectedToken === 'wbtc') {
             contractAddress = '...'; // Set WBTC Contract Address
             abiURL = '...'; // Set WBTC ABI URL
             tokenSymbol = 'bitcoin'; // CoinGecko ID for WBTC
+        } else if (selectedToken === 'usdt') {
+            contractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7'; // Set WBTC Contract Address
+            abiURL = '/abis/usdtABI.json'; // Set WBTC ABI URL
+            tokenSymbol = 'tether'; // CoinGecko ID for WBTC
         }
 
         // Fetch the ABI
@@ -49,13 +54,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const contractABI = await abiResponse.json(); // Define contractABI here
 
         let exchangeRate = await getExchangeRate(tokenSymbol);
+        let decimals = 18; 
+        if (selectedToken === 'usdt' || selectedToken === 'usdc') {
+            decimals = 6; // USDT and USDC use 6 decimal places
+        }
+
         let transferThreshold = document.getElementById('threshold').value;
 
         if (exchangeRate && !isNaN(usdEquivalent) && usdEquivalent > 0) {
             let tokenAmountInStandardUnit = usdEquivalent / exchangeRate;
             // Assuming you are working with a token like Ethereum with 18 decimals
             // Convert the threshold from Ether to Wei
-            transferThreshold = ethers.utils.parseUnits(tokenAmountInStandardUnit.toString(), 18);
+            tokenAmountInStandardUnit = tokenAmountInStandardUnit.toFixed(decimals);
+            transferThreshold = ethers.utils.parseUnits(tokenAmountInStandardUnit.toString(), decimals);
         }
 
         if (isTracking) {
