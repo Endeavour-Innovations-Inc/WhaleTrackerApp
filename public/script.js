@@ -108,8 +108,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const data = await response.json();
         if (data.logs && data.logs.length > 0) {
             data.logs.forEach(log => {
-                consoleOutputDiv.textContent += '\n' + log;
+                document.getElementById('consoleOutput').innerHTML += `<p>${log}</p>`;
             });
         }
-    }
+    }    
 });

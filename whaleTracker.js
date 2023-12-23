@@ -18,7 +18,8 @@ async function startWhaleTracker(rpcURL, contractAddress, contractABI, transferT
     // Define the listener function
     const listenerFunc = (from, to, amount, data) => {
         if(amount.gte(ethers.BigNumber.from(transferThreshold))) {
-            const logMessage = `New whale transfer for ${name}: https://etherscan.io/tx/${data.transactionHash} Amount transferred: ${amount.toString()}`;
+            const etherscanUrl = `https://etherscan.io/tx/${data.transactionHash}`;
+            const logMessage = `New whale transfer for ${name}: <a href="${etherscanUrl}" target="_blank">${etherscanUrl}</a> Amount transferred: ${ethers.utils.formatUnits(amount, 18)} ETH`;
             addLogMessage(logMessage);
         }
     };
