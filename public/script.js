@@ -1,13 +1,62 @@
+async function getExchangeRate(tokenSymbol) {
+    try {
+        const url = `https://api.coingecko.com/api/v3/simple/price?ids=${tokenSymbol}&vs_currencies=usd`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data[tokenSymbol].usd;
+    } catch (error) {
+        console.error('Error fetching exchange rate:', error);
+        return null;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', (event) => {
     let isTracking = false;
     let logInterval;
 
     const consoleOutputDiv = document.getElementById('consoleOutput');
+    const networkSelect = document.getElementById('network'); // Network dropdown
+    const tokenSelect = document.getElementById('token'); // Token dropdown
 
     document.getElementById('trackerForm').addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const startTrackingButton = document.getElementById('startTracking');
+        const selectedNetwork = networkSelect.value; // Selected network
+        const selectedToken = tokenSelect.value; // Selected token
+        const usdEquivalent = parseFloat(document.getElementById('usdEquivalent').value);
+
+        let rpcURL = 'https://gateway.tenderly.co/public/mainnet';
+        if (selectedNetwork === 'cronos') {
+            rpcURL = 'https://evm.cronos.org/';
+        }
+
+        let contractAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+        let abiURL = '/abis/ethABI.json';
+        let tokenSymbol = 'ethereum'; // Default to Ethereum
+
+        if (selectedToken === 'eth') {
+            contractAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+            abiURL = '/abis/ethABI.json';
+        } else if (selectedToken === 'wbtc') {
+            contractAddress = '...'; // Set WBTC Contract Address
+            abiURL = '...'; // Set WBTC ABI URL
+            tokenSymbol = 'bitcoin'; // CoinGecko ID for WBTC
+        }
+
+        // Fetch the ABI
+        const abiResponse = await fetch(abiURL);
+        const contractABI = await abiResponse.json(); // Define contractABI here
+
+        let exchangeRate = await getExchangeRate(tokenSymbol);
+        let transferThreshold = document.getElementById('threshold').value;
+
+        if (exchangeRate && !isNaN(usdEquivalent) && usdEquivalent > 0) {
+            let tokenAmountInStandardUnit = usdEquivalent / exchangeRate;
+            // Assuming you are working with a token like Ethereum with 18 decimals
+            // Convert the threshold from Ether to Wei
+            transferThreshold = ethers.utils.parseUnits(tokenAmountInStandardUnit.toString(), 18);
+        }
 
         if (isTracking) {
             // Stop the tracking logic
@@ -25,16 +74,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
             isTracking = false;
         } else {
             // Start tracking logic
-            const rpcURL = 'https://evm.cronos.org/';
-            const contractAddress = '0xDD73dEa10ABC2Bff99c60882EC5b2B81Bb1Dc5B2';
-            const thresholdValue = document.getElementById('threshold').value;
-            
-            // Fetch the ABI
-            const abiResponse = await fetch('/abis/tonicABI.json');
-            const contractABI = await abiResponse.json();
-
-            const transferThreshold = thresholdValue; // Assuming you handle the conversion on the server
-
             const response = await fetch('/start-tracking', {
                 method: 'POST',
                 headers: {
@@ -45,7 +84,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             const data = await response.json();
             consoleOutputDiv.textContent += '\n' + data.message;
-
             startTrackingButton.textContent = 'Stop Tracking';
             isTracking = true;
 

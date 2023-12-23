@@ -18,7 +18,7 @@ async function startWhaleTracker(rpcURL, contractAddress, contractABI, transferT
     // Define the listener function
     const listenerFunc = (from, to, amount, data) => {
         if(amount.gte(ethers.BigNumber.from(transferThreshold))) {
-            const logMessage = `New whale transfer for ${name}: https://cronoscan.com/tx/${data.transactionHash} Amount transferred: ${amount.toString()}`;
+            const logMessage = `New whale transfer for ${name}: https://etherscan.io/tx/${data.transactionHash} Amount transferred: ${amount.toString()}`;
             addLogMessage(logMessage);
         }
     };

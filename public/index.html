@@ -25,6 +25,7 @@
 
         /* Removed LED style */
     </style>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
 </head>
 <body>
     <h1>Whale Tracker</h1>
@@ -32,13 +33,14 @@
         <form id="trackerForm">
             <label for="network">Select Network:</label>
             <select id="network">
-                <option value="cronos">Cronos</option>
-                <!-- Additional networks can be added here -->
+                <option value="cronos">cronos</option>
+                <option value="ethereum">ethereum</option>
             </select>
 
             <label for="token">Select Token:</label>
             <select id="token">
-                <option value="tonic">TONIC</option>
+                <option value="tonic">ETH</option>
+                <option value="tonic">WBTC</option>
                 <!-- Additional tokens can be added here -->
             </select>
 
